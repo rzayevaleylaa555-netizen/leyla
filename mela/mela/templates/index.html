@@ -1,0 +1,304 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="az">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Restoran Menyusu</title>
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.1/css/all.min.css">
+
+<style>
+body{
+    margin:0;
+    font-family: "Segoe UI", sans-serif;
+    background:#fff0f5;
+}
+
+/* HERO */
+.hero{
+    background: linear-gradient(135deg,#ff4fa3,#ff77b7);
+    color:white;
+    padding:30px;
+    text-align:center;
+    font-size:28px;
+    font-weight:bold;
+}
+
+/* CONTAINER */
+.container{padding:20px}
+
+/* CATEGORY */
+.menu-category{margin-bottom:45px}
+.menu-category h2{
+    color:#ff2f92;
+    margin-bottom:15px;
+}
+
+/* GRID */
+.menu-grid{
+    display:grid;
+    grid-template-columns:repeat(auto-fill,minmax(170px,1fr));
+    gap:15px;
+}
+
+/* CARD */
+.card{
+    background:white;
+    border-radius:14px;
+    overflow:hidden;
+    cursor:pointer;
+    box-shadow:0 4px 10px rgba(0,0,0,.1);
+    transition:.25s;
+}
+.card:hover{transform:scale(1.05)}
+.card img{
+    width:100%;
+    height:130px;
+    object-fit:cover;
+}
+.card-info{padding:10px}
+.card-title{font-weight:600}
+.price{color:#ff2f92;font-weight:bold}
+
+/* CART ICON */
+#cart-icon{
+    position:fixed;
+    top:20px;
+    right:20px;
+    background:#ff2f92;
+    color:white;
+    padding:12px 16px;
+    border-radius:50px;
+    cursor:pointer;
+    z-index:1000;
+    font-weight:bold;
+}
+
+/* MODAL */
+#cart-modal{
+    display:none;
+    position:fixed;
+    inset:0;
+    background:rgba(0,0,0,.6);
+    justify-content:center;
+    align-items:center;
+    z-index:2000;
+}
+.cart-content{
+    background:white;
+    padding:20px;
+    width:320px;
+    border-radius:14px;
+}
+.cart-item{
+    display:flex;
+    justify-content:space-between;
+    margin-bottom:8px;
+}
+.cart-content button{
+    width:100%;
+    padding:10px;
+    background:#ff2f92;
+    border:none;
+    color:white;
+    border-radius:8px;
+    cursor:pointer;
+}
+
+/* FOOTER */
+footer{
+    text-align:center;
+    padding:15px;
+    background:#ff2f92;
+    color:white;
+}
+</style>
+</head>
+
+<body>
+
+<!-- CART -->
+<div id="cart-icon" onclick="openCart()">
+<i class="fa-solid fa-cart-shopping"></i> <span id="cart-count">0</span>
+</div>
+
+<div class="hero">
+<i class="fa-solid fa-utensils"></i> MELA RESTORAN MENYUSU
+</div>
+
+<div class="container">
+
+<!-- SALATLAR -->
+<div class="menu-category">
+<h2><i class="fa-solid fa-leaf"></i> Salatlar</h2>
+<div class="menu-grid">
+
+{% for p in s_products %}
+<div class="card" onclick="addToCart('{{ p.name }}', {{ p.price }})">
+<img src="{{ p.image.url }}">
+<div class="card-info">
+<div class="card-title">{{ p.name }}</div>
+<div class="price">{{ p.price }} AZN</div>
+</div>
+</div>
+{% endfor %}
+
+</div>
+</div>
+
+<!-- ESAS YEMEKLER -->
+<div class="menu-category">
+<h2><i class="fa-solid fa-drumstick-bite"></i> Əsas yeməklər</h2>
+<div class="menu-grid">
+
+<div class="card" onclick="addToCart('Toyuq Qril',15)">
+<img src="https://i.ytimg.com/vi/tV7jQ84tdyA/hq720.jpg">
+<div class="card-info">
+<div class="card-title">Toyuq Qril</div>
+<div class="price">15 AZN</div>
+</div>
+</div>
+
+<div class="card" onclick="addToCart('Lülə Kabab',14)">
+<img src="https://kababxana.az/wp-content/uploads/2023/10/lule.jpeg">
+<div class="card-info">
+<div class="card-title">Lülə Kabab</div>
+<div class="price">14 AZN</div>
+</div>
+</div>
+
+<div class="card" onclick="addToCart('Tikə Kabab',12)">
+<img src="https://turkascihaberleri.com/Resimler/tikekebabi_09o.jpg">
+<div class="card-info">
+<div class="card-title">Tikə Kabab</div>
+<div class="price">12 AZN</div>
+</div>
+</div>
+
+</div>
+</div>
+
+<!-- SOYUQ ICKILER -->
+<div class="menu-category">
+<h2><i class="fa-solid fa-glass-water"></i> Soyuq içkilər</h2>
+<div class="menu-grid">
+
+<div class="card" onclick="addToCart('Coca-Cola',3.5)">
+<img src="https://unityfood.az/storage/images/g/2841/1280x960/1707117330.jpg">
+<div class="card-info">
+<div class="card-title">Coca-Cola</div>
+<div class="price">3.5 AZN</div>
+</div>
+</div>
+
+<div class="card" onclick="addToCart('Sprite',3.5)">
+<img src="https://unityfood.az/storage/images/g/2840/1280x960/1294525920.jpg">
+<div class="card-info">
+<div class="card-title">Sprite</div>
+<div class="price">3.5 AZN</div>
+</div>
+</div>
+
+<div class="card" onclick="addToCart('Ayran',1.5)">
+<img src="https://images.migrosone.com/sanalmarket/product/46054715/46054715-8a2faf-1650x1650.jpg">
+<div class="card-info">
+<div class="card-title">Ayran</div>
+<div class="price">1.5 AZN</div>
+</div>
+</div>
+
+</div>
+</div>
+
+<!-- ISTI ICKILER -->
+<div class="menu-category">
+<h2><i class="fa-solid fa-mug-hot"></i> İsti içkilər</h2>
+<div class="menu-grid">
+
+<div class="card" onclick="addToCart('Çay',5)">
+<img src="https://odulbufe.com/wp-content/uploads/2021/08/C%CC%A7ay.jpg">
+<div class="card-info">
+<div class="card-title">Çay</div>
+<div class="price">5 AZN</div>
+</div>
+</div>
+
+<div class="card" onclick="addToCart('Latte',7)">
+<img src="https://upload.wikimedia.org/wikipedia/commons/9/9f/Latte_by_Nijat_Zayidov.jpg">
+<div class="card-info">
+<div class="card-title">Latte</div>
+<div class="price">7 AZN</div>
+</div>
+</div>
+
+</div>
+</div>
+
+<!-- SIRNIYYATLAR -->
+<div class="menu-category">
+<h2><i class="fa-solid fa-cake-candles"></i> Şirniyyatlar</h2>
+<div class="menu-grid">
+
+<div class="card" onclick="addToCart('Künefe',9)">
+<img src="https://turkishfoodie.com/wp-content/uploads/2018/06/Kunefe.jpg">
+<div class="card-info">
+<div class="card-title">Künefe</div>
+<div class="price">9 AZN</div>
+</div>
+</div>
+
+<div class="card" onclick="addToCart('Tiramisu',10)">
+<img src="https://www.kingarthurbaking.com/sites/default/files/2023-03/Tiramisu_1426.jpg">
+<div class="card-info">
+<div class="card-title">Tiramisu</div>
+<div class="price">10 AZN</div>
+</div>
+</div>
+
+</div>
+</div>
+
+</div>
+
+<!-- MODAL -->
+<div id="cart-modal">
+<div class="cart-content">
+<h3><i class="fa-solid fa-cart-shopping"></i> Sebet</h3>
+<div id="cart-items"></div>
+<hr>
+<b>Toplam: <span id="cart-total">0</span> AZN</b>
+<button onclick="closeCart()">Bağla</button>
+</div>
+</div>
+
+<footer>© 2025 MELA Restoran | Ünvan: Bakı şəhəri, Nəsimi rayonu, Memar əcəmi metrosu yaxınlığı</footer>
+
+<script>
+let cart=[];
+
+function addToCart(name,price){
+cart.push({name,price});
+updateCart();
+}
+
+function updateCart(){
+let items=document.getElementById("cart-items");
+let count=document.getElementById("cart-count");
+let total=document.getElementById("cart-total");
+items.innerHTML="";
+let sum=0;
+cart.forEach(i=>{
+sum+=i.price;
+items.innerHTML+=`<div class="cart-item"><span>${i.name}</span><span>${i.price} AZN</span></div>`;
+});
+count.innerText=cart.length;
+total.innerText=sum;
+}
+
+function openCart(){document.getElementById("cart-modal").style.display="flex"}
+function closeCart(){document.getElementById("cart-modal").style.display="none"}
+</script>
+
+</body>
+</html>
